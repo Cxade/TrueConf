@@ -12,10 +12,14 @@
     </div>
     <div class="elevator__buttons" :style="{ height: numberOfFloors + '0rem' }">
       <div
-        class="elevator__button"
-        @click="addQueue(n)"
         v-for="n in numberOfFloors"
         :key="n"
+        :class="{
+          elevator__button: true,
+          elevator__button_busy: busyFloors.includes(n),
+          elevator__button_wait: queue.includes(n),
+        }"
+        @click="addQueue(n)"
       >
         {{ n }}
       </div>
@@ -125,6 +129,9 @@ export default {
     availableElevators() {
       return this.elevators.filter((elevator) => elevator.isBusy === false);
     },
+    busyFloors() {
+      return this.elevators.map((elevator) => elevator.floor);
+    },
   },
 };
 </script>
@@ -154,9 +161,17 @@ export default {
     color: white;
     font-size: 2rem;
     height: 4rem;
+    width: 4rem;
     background-color: green;
     border-radius: 2rem;
     cursor: pointer;
+
+    &_busy {
+      background-color: red;
+    }
+    &_wait {
+      background-color: aqua;
+    }
   }
 }
 </style>
