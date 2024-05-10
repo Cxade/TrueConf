@@ -7,6 +7,7 @@
         :numberOfFloors="numberOfFloors"
         :floor="elevator.floor"
         :isBusy="elevator.isBusy"
+        :isMoving="elevator.isMoving"
       />
     </div>
     <div class="elevator__buttons" :style="{ height: numberOfFloors + '0rem' }">
@@ -33,10 +34,10 @@ export default {
       queue: [],
       numberOfFloors: 8,
       elevators: [
-        { id: 1, floor: 1, isBusy: false },
-        { id: 2, floor: 1, isBusy: false },
-        { id: 3, floor: 1, isBusy: false },
-        { id: 4, floor: 1, isBusy: false },
+        { id: 1, floor: 1, isBusy: false, isMoving: false },
+        { id: 2, floor: 1, isBusy: false, isMoving: false },
+        { id: 3, floor: 1, isBusy: false, isMoving: false },
+        { id: 4, floor: 1, isBusy: false, isMoving: false },
       ],
     };
   },
@@ -88,9 +89,11 @@ export default {
 
     elevatorMove(elevators, floor) {
       let closest = this.checkNearestElevator(elevators, floor);
+      let duration = null;
       if (closest) {
+        duration = Math.abs(floor - closest.floor) * 1000;
         closest.floor = floor;
-        this.isBusyChangeWait(closest);
+        this.isBusyChangeWait(closest, duration);
         this.delQueue(floor);
       }
     },
@@ -102,11 +105,20 @@ export default {
     isBusyChange(elevator) {
       elevator.isBusy = !elevator.isBusy;
     },
-    isBusyChangeWait(elevator) {
+    isMovingChange(elevator) {
+      elevator.isMoving = !elevator.isMoving;
+    },
+    isBusyChangeWait(elevator, duration) {
       this.isBusyChange(elevator);
+      this.isMovingChange(elevator);
+
       setTimeout(() => {
-        this.isBusyChange(elevator);
-      }, 3000);
+        this.isMovingChange(elevator);
+
+        setTimeout(() => {
+          this.isBusyChange(elevator);
+        }, 3000);
+      }, duration);
     },
   },
   computed: {

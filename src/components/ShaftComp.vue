@@ -2,16 +2,52 @@
   <div class="shaft" :style="{ height: numberOfFloors + '0rem' }">
     <div
       class="elevator"
-      :style="{ marginBottom: floor - 1 + '0rem' }"
-      :class="{ busy: isBusy }"
-    ></div>
+      :style="{
+        transitionDuration: duration + 's',
+        marginBottom: floor - 1 + '0rem',
+      }"
+      :class="{ busy: isBusy, moving: isMoving }"
+    >
+      {{ this.isMoving ? arrow : null }}
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "ShaftComp",
-  props: { numberOfFloors: Number, floor: Number, isBusy: Boolean },
+  props: {
+    numberOfFloors: Number,
+    floor: Number,
+    isBusy: Boolean,
+    isMoving: Boolean,
+  },
+  data() {
+    return {
+      duration: 1,
+      movingTop: null,
+    };
+  },
+
+  watch: {
+    floor: {
+      handler(newFloor, oldFloor) {
+        const diff = newFloor - oldFloor;
+        this.duration = Math.abs(diff);
+        diff > 0 ? (this.movingTop = true) : (this.movingTop = false);
+      },
+      deep: true,
+    },
+  },
+  computed: {
+    arrow() {
+      if (this.movingTop) {
+        return "⬆";
+      } else {
+        return "⬇";
+      }
+    },
+  },
 };
 </script>
 
@@ -24,8 +60,13 @@ export default {
 }
 
 .elevator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: blue;
   height: 10rem;
+  font-size: 5rem;
+  transition-timing-function: linear;
 }
 
 @-webkit-keyframes busy {
