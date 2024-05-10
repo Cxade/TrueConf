@@ -1,13 +1,17 @@
 <template>
   <div class="shaft" :style="{ height: numberOfFloors + '0rem' }">
-    <div class="elevator" :style="{ marginBottom: floor - 1 + '0rem' }"></div>
+    <div
+      class="elevator"
+      :style="{ marginBottom: floor - 1 + '0rem' }"
+      :class="{ busy: isBusy }"
+    ></div>
   </div>
 </template>
 
 <script>
 export default {
   name: "ShaftComp",
-  props: { numberOfFloors: Number, floor: Number },
+  props: { numberOfFloors: Number, floor: Number, isBusy: Boolean },
 };
 </script>
 
@@ -22,5 +26,33 @@ export default {
 .elevator {
   background-color: blue;
   height: 10rem;
+}
+
+@-webkit-keyframes busy {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes busy {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.busy {
+  -webkit-animation: busy 1s infinite both;
+  animation: busy 1s infinite both;
 }
 </style>
