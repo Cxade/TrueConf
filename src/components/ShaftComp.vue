@@ -8,6 +8,7 @@
       }"
       :class="{ busy: isBusy, moving: isMoving }"
     >
+      <div class="elevator__floor">{{ floor }}</div>
       {{ this.isMoving ? arrow : null }}
     </div>
   </div>
@@ -64,11 +65,29 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
   background-color: blue;
   height: 10rem;
   font-size: 5rem;
   transition-timing-function: linear;
+  border-radius: 1rem;
+  border: 0.4rem solid black;
   color: white;
+
+  &__floor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0.6rem;
+    width: 2rem;
+    height: 2.2rem;
+    background-color: white;
+    border: 0.2rem solid black;
+    border-radius: 0.3rem;
+    font-size: 1.8rem;
+    color: black;
+  }
 }
 
 @-webkit-keyframes busy {
