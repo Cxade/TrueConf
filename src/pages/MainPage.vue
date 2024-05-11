@@ -38,10 +38,10 @@ export default {
       queue: [],
       numberOfFloors: 8,
       elevators: [
-        { id: 1, floor: 1, isBusy: false, isMoving: false },
-        { id: 2, floor: 1, isBusy: false, isMoving: false },
-        { id: 3, floor: 1, isBusy: false, isMoving: false },
-        { id: 4, floor: 1, isBusy: false, isMoving: false },
+        { floor: 1, isBusy: false, isMoving: false },
+        { floor: 1, isBusy: false, isMoving: false },
+        { floor: 1, isBusy: false, isMoving: false },
+        { floor: 1, isBusy: false, isMoving: false },
       ],
     };
   },
@@ -66,12 +66,14 @@ export default {
       );
       if (!this.queue.includes(floor) && index === -1) {
         this.queue.push(floor);
+        this.localStorageSet("queue");
       }
     },
     delQueue(floor) {
       const index = this.queue.indexOf(floor);
       if (index !== -1) {
         this.queue.splice(index, 1);
+        this.localStorageSet("queue");
       }
     },
     checkNearestElevator(elevators, floor) {
@@ -99,6 +101,7 @@ export default {
         closest.floor = floor;
         this.isBusyChangeWait(closest, duration);
         this.delQueue(floor);
+        this.localStorageSet("elevators");
       }
     },
     elevatorCall() {
@@ -108,9 +111,11 @@ export default {
     },
     isBusyChange(elevator) {
       elevator.isBusy = !elevator.isBusy;
+      this.localStorageSet("elevators");
     },
     isMovingChange(elevator) {
       elevator.isMoving = !elevator.isMoving;
+      this.localStorageSet("elevators");
     },
     isBusyChangeWait(elevator, duration) {
       this.isBusyChange(elevator);
@@ -124,6 +129,50 @@ export default {
         }, 3000);
       }, duration);
     },
+    localStorageSet(key) {
+      switch (key) {
+        case "elevators":
+          localStorage.setItem("elevators", JSON.stringify(this.elevators));
+          break;
+
+        case "queue":
+          localStorage.setItem("queue", JSON.stringify(this.queue));
+          break;
+
+        case "numberOfFloors":
+          localStorage.setItem(
+            "numberOfFloors",
+            JSON.stringify(this.numberOfFloors)
+          );
+          break;
+
+        default:
+          break;
+      }
+    },
+    checkLocalStorage() {
+      let elevatorsLS = JSON.parse(localStorage.getItem("elevators"));
+      if (elevatorsLS) {
+        elevatorsLS = elevatorsLS.map((elevator) => {
+          return {
+            ...elevator,
+            isMoving: false,
+            isBusy: false,
+          };
+        });
+        this.elevators = elevatorsLS;
+      }
+      const queueLS = JSON.parse(localStorage.getItem("queue"));
+      if (queueLS) {
+        this.queue = queueLS;
+      }
+      const numberOfFloorsLS = JSON.parse(
+        localStorage.getItem("numberOfFloors")
+      );
+      if (numberOfFloorsLS) {
+        this.numberOfFloors = numberOfFloorsLS;
+      }
+    },
   },
   computed: {
     availableElevators() {
@@ -132,6 +181,9 @@ export default {
     busyFloors() {
       return this.elevators.map((elevator) => elevator.floor);
     },
+  },
+  mounted() {
+    this.checkLocalStorage();
   },
 };
 </script>
