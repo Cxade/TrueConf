@@ -9,10 +9,7 @@
         :isBusy="elevator.isBusy"
         :isMoving="elevator.isMoving"
       />
-      <div
-        class="elevator__lines_box"
-        :style="{ width: elevators.length * 2 + '0rem' }"
-      >
+      <div class="elevator__lines_box">
         <div class="elevator__lines" v-for="n in numberOfFloors" :key="n"></div>
       </div>
     </div>
@@ -41,14 +38,10 @@ export default {
   components: { ShaftComp },
   data() {
     return {
-      queue: [],
       numberOfFloors: 8,
-      elevators: [
-        { floor: 1, isBusy: false, isMoving: false },
-        { floor: 1, isBusy: false, isMoving: false },
-        { floor: 1, isBusy: false, isMoving: false },
-        { floor: 1, isBusy: false, isMoving: false },
-      ],
+      numberOfElevators: 4,
+      queue: [],
+      elevators: [],
     };
   },
   watch: {
@@ -157,29 +150,50 @@ export default {
       }
     },
     checkLocalStorage() {
-      let elevatorsLS = JSON.parse(localStorage.getItem("elevators"));
-      if (elevatorsLS) {
-        elevatorsLS = elevatorsLS.map((elevator) => {
-          return {
-            ...elevator,
-            isMoving: false,
-            isBusy: false,
-          };
-        });
-        this.elevators = elevatorsLS;
-      }
-      const queueLS = JSON.parse(localStorage.getItem("queue"));
-      if (queueLS) {
-        this.queue = queueLS;
-      }
-      const numberOfFloorsLS = JSON.parse(
-        localStorage.getItem("numberOfFloors")
+      const numberOfElevatorsLS = JSON.parse(
+        localStorage.getItem("numberOfElevators")
       );
-      if (numberOfFloorsLS) {
-        this.numberOfFloors = numberOfFloorsLS;
+      if (numberOfElevatorsLS === this.numberOfElevators) {
+        let elevatorsLS = JSON.parse(localStorage.getItem("elevators"));
+
+        if (elevatorsLS.length === this.numberOfElevators) {
+          elevatorsLS = elevatorsLS.map((elevator) => {
+            return {
+              ...elevator,
+              isMoving: false,
+              isBusy: false,
+            };
+          });
+          this.elevators = elevatorsLS;
+        } else {
+          this.loadData(this.numberOfElevators);
+        }
+
+        const queueLS = JSON.parse(localStorage.getItem("queue"));
+        if (queueLS) {
+          this.queue = queueLS;
+        }
+        const numberOfFloorsLS = JSON.parse(
+          localStorage.getItem("numberOfFloors")
+        );
+        if (numberOfFloorsLS) {
+          this.numberOfFloors = numberOfFloorsLS;
+        }
+      } else {
+        this.loadData(this.numberOfElevators);
+        localStorage.setItem(
+          "numberOfElevators",
+          JSON.stringify(this.numberOfElevators)
+        );
+      }
+    },
+    loadData(numberOfElevators) {
+      for (let i = 0; i < numberOfElevators; i++) {
+        this.elevators.push({ floor: 1, isBusy: false, isMoving: false });
       }
     },
   },
+
   computed: {
     availableElevators() {
       return this.elevators.filter((elevator) => elevator.isBusy === false);
@@ -208,14 +222,15 @@ export default {
       display: flex;
       flex-direction: column;
       z-index: -10;
-      left: -5rem;
+      left: 0;
+      width: 100%;
     }
     height: 10rem;
     border-bottom: 1px solid rgb(88 88 88 / 25%);
   }
   &__box {
     display: flex;
-    gap: 5rem;
+    gap: 2rem;
   }
   &__buttons {
     display: flex;
