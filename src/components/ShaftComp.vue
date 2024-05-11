@@ -54,8 +54,8 @@ export default {
 
 <style scoped lang="scss">
 .shaft {
-  border-left: 1px solid black;
-  border-right: 1px solid black;
+  border-left: 1px dashed black;
+  border-right: 1px dashed black;
   width: 7rem;
   display: flex;
   flex-direction: column-reverse;
