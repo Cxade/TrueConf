@@ -6,7 +6,7 @@
         transitionDuration: duration + 's',
         marginBottom: floor - 1 + '0rem',
       }"
-      :class="{ busy: isBusy, moving: isMoving }"
+      :class="{ busy: isBusy && !isMoving, moving: isMoving }"
     >
       <div class="elevator__floor">{{ floor }}</div>
       {{ this.isMoving ? arrow : null }}
@@ -114,7 +114,7 @@ export default {
 }
 
 .busy {
-  -webkit-animation: busy 1s infinite both;
-  animation: busy 1s infinite both;
+  -webkit-animation: busy 0.98s infinite both;
+  animation: busy 0.98s infinite both;
 }
 </style>
