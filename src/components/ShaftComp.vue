@@ -53,7 +53,8 @@ export default {
 
 <style scoped lang="scss">
 .shaft {
-  border: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
   width: 7rem;
   display: flex;
   flex-direction: column-reverse;
@@ -67,6 +68,7 @@ export default {
   height: 10rem;
   font-size: 5rem;
   transition-timing-function: linear;
+  color: white;
 }
 
 @-webkit-keyframes busy {

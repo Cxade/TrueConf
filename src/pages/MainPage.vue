@@ -9,6 +9,12 @@
         :isBusy="elevator.isBusy"
         :isMoving="elevator.isMoving"
       />
+      <div
+        class="elevator__lines_box"
+        :style="{ width: elevators.length * 2 + '0rem' }"
+      >
+        <div class="elevator__lines" v-for="n in numberOfFloors" :key="n"></div>
+      </div>
     </div>
     <div class="elevator__buttons" :style="{ height: numberOfFloors + '0rem' }">
       <div
@@ -194,6 +200,19 @@ export default {
   justify-content: center;
   gap: 2rem;
   padding-top: 10rem;
+  position: relative;
+
+  &__lines {
+    &_box {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      z-index: -10;
+      left: -5rem;
+    }
+    height: 10rem;
+    border-bottom: 1px solid rgb(88 88 88 / 25%);
+  }
   &__box {
     display: flex;
     gap: 5rem;
@@ -216,11 +235,16 @@ export default {
     width: 4rem;
     background-color: green;
     border-radius: 2rem;
-    cursor: pointer;
+
+    &:not(.elevator__button_busy, .elevator__button_wait):hover {
+      outline: 0.7rem solid rgb(141, 213, 241);
+      cursor: pointer;
+    }
 
     &_busy {
       background-color: red;
     }
+
     &_wait {
       background-color: aqua;
     }
